@@ -2,7 +2,8 @@
 import qs from "query-string";
 import { Search } from "lucide-react";
 import { useDebounceValue } from "usehooks-ts";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -10,18 +11,26 @@ export const SearchInput = () => {
   const router = useRouter();
   const [value, setValue] = useState("");
   const debouncedValue = useDebounceValue(value, 500);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set(name, value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+
   useEffect(() => {
-    const url = qs.stringifyUrl(
-      {
-        url: "/",
-        query: { search: debouncedValue[0] },
-      },
-      { skipEmptyString: true, skipNull: true }
+    router.push(
+      pathname + "?" + createQueryString("search", debouncedValue[0])
     );
-    router.push(url);
   }, [debouncedValue, router]);
 
   return (
