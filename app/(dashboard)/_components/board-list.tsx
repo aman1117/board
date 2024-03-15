@@ -10,7 +10,7 @@ import { BoardCard } from "./board-card";
 import { NewBoardButton } from "./new-board-button";
 
 interface BoardListProps {
-orgId: string;
+  orgId: string;
   query: {
     search?: string;
     favorites?: boolean;
@@ -18,7 +18,11 @@ orgId: string;
 }
 
 export const BoardList = ({ orgId, query }: BoardListProps) => {
-  const data = useQuery(api.boards.get, { orgId, ...query });
+  const data = useQuery(api.boards.get, {
+    orgId,
+    ...query,
+    favorites: query.favorites ? "true" : undefined,
+  });
   if (data === undefined) {
     return (
       <div>
