@@ -1,6 +1,7 @@
 "use client";
 
 import { Info } from "./info";
+import { Loading } from "./loading";
 import { Participants } from "./participants";
 import { Toolbar } from "./toolbar";
 
